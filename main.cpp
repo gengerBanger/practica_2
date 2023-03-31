@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <limits>
 using namespace std;
 
 struct ListItem{
@@ -35,6 +36,7 @@ class List{
         int * i = new int(0), p;
         do{
             cin >> p;
+
             buff.push_back(p);
             if(!cin){
                 buff.pop_back();
@@ -75,7 +77,6 @@ class List{
                 outList(begin);
                 break;
             }
-
         }
     }
     ~List(){
@@ -182,7 +183,6 @@ class List{
                 item->data = dataIt;
                 shiftable_item->head = item;
             }
-
             outList(begin);
             len++;
         }
@@ -229,11 +229,18 @@ int main() {
     cout << "~~Choose how to create the list~~\n\t1) Fill with random\n\t2) Fill in manually\n";
     cin >> key;
     List newList(key);
+    cin.clear();
+    while(cin.get() != '\n');
+
     while(check){
         cout << "~~Choose type of operation~~\n";
-        cout << "\t1)Search element\n\t2)Delete element\n\t3)Insert element\n\t4)Permutation of elements\n";
+        cout << "\t1)Search element\n\t2)Delete element\n\t3)Insert element\n\t4)Permutation of elements\n\t0)Exit\n";
         cin >> key;
         switch (key) {
+            case '0':{
+                check = false;
+                break;
+            }
             case '1':{
                 cout << "~~How do you want to search element~~\n\t1) By index\n\t2) By value\n";
                 cin >> key;
@@ -280,18 +287,30 @@ int main() {
                         break;
                     }
                 }
+                break;
 
             }
             case '3':{
-
+                cout << "~~Enter the index of element which you want to insert and his value~~\n";
+                int *index = new int, *data = new int;
+                cin >> *index >> *data;
+                newList.insertItem(*index,*data);
+                delete index;
+                delete data;
+                break;
             }
             case '4':{
-
+                cout << "~~Enter the indexes of elements which you want to swap~~\n";
+                int *index1 = new int, *index2 = new int;
+                cin >> *index1 >> *index2;
+                newList.permutationItems(*index1,*index2);
+                delete index1;
+                delete index2;
+                break;;
             }
-        }
-        check = false;
-    }
 
+        }
+    }
     system("pause");
     return 0;
 }
