@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <limits>
 using namespace std;
-
 struct ListItem{
     int data;
     ListItem * head;
@@ -91,13 +89,20 @@ class List{
         return begin;
     }
 
+    int GetLen(){
+        return len;
+    }
+
     void outList(ListItem * beg){
-        cout <<"---> ";
-        while(beg){
-            cout << beg->data<< " ";
-            beg = beg->tail;
+        if (beg == nullptr) cout << "\t~~The list is empty~~\n";
+        else{
+            cout <<"---> ";
+            while(beg){
+                cout << beg->data<< " ";
+                beg = beg->tail;
+            }
         }
-        cout << '\n';
+        cout << "\n\n";
     }
     ListItem * searchItemIndex(int index){
         ListItem * beg = begin;
@@ -120,24 +125,33 @@ class List{
     }
 
     void deleteItemIndex(int index){
-        if(index == 1) begin = begin->tail;
-       ListItem * item = searchItemIndex(index);
-       if(item){
-           if (item->head == nullptr){
-               item->tail->head = nullptr;
-               delete item;
-           }
-           if(item->tail == nullptr){
-               item->head->tail = nullptr;
-               delete item;
-           }
-           else{
-               item->head->tail = item->tail;
-               item->tail->head = item->head;
-               delete item;
-           }
-           len--;
-       }
+        ListItem * item = searchItemIndex(index);
+        if(index == 1 && len >= 2) begin = begin->tail;
+        if(index == 1 && len == 1){
+            len = 0;
+            begin = nullptr;
+            delete item;
+        }
+        else{
+            if(item){
+                if (item->head == nullptr){
+                    item->tail->head = nullptr;
+                    delete item;
+                }
+                else{
+                    if(item->tail == nullptr){
+                        item->head->tail = nullptr;
+                        delete item;
+                    }
+                    else{
+                        item->head->tail = item->tail;
+                        item->tail->head = item->head;
+                        delete item;
+                    }
+                }
+                --len;
+            }
+        }
         outList(begin);
     }
 
@@ -166,8 +180,15 @@ class List{
     }
 
     void insertItem(int index, int dataIt){
-        ListItem * shiftable_item = searchItemIndex(index), * item = new ListItem;
-        if(shiftable_item){
+        if(len == 0){
+            ListItem * curr = new ListItem;
+            begin = curr;
+            curr->tail = nullptr;
+            curr->head = nullptr;
+            curr->data = dataIt;
+        }
+        else{
+            ListItem * shiftable_item , * item = new ListItem;
             if (index == len + 1) {
                 shiftable_item = searchItemIndex(len);
                 shiftable_item->tail = item;
@@ -175,17 +196,18 @@ class List{
                 item->tail = nullptr;
                 item->data = dataIt;
             }
-            else {
-                if (index == 1) begin = item;
-                else shiftable_item->head->tail = item;
-                item->head = shiftable_item->head;
-                item->tail = shiftable_item;
-                item->data = dataIt;
-                shiftable_item->head = item;
-            }
+            shiftable_item = searchItemIndex(index);
+            if(shiftable_item) {
+                    if (index == 1) begin = item;
+                    else shiftable_item->head->tail = item;
+                    item->head = shiftable_item->head;
+                    item->tail = shiftable_item;
+                    item->data = dataIt;
+                    shiftable_item->head = item;
+                }
+        }
             outList(begin);
             len++;
-        }
     }
 
     void permutationItems(int item1, int item2){
@@ -222,6 +244,15 @@ class List{
             outList(begin);
         }
     }
+     void ihw (int k ){
+        if(k <= len){
+            srand(time(nullptr));
+            for(int i = 1; i <= k; i++){
+                deleteItemIndex((rand() % len) + 1);
+            }
+        }
+        else cout <<"\t---Error---\n";
+    }
 };
 int main() {
     bool check = true;
@@ -234,7 +265,7 @@ int main() {
 
     while(check){
         cout << "~~Choose type of operation~~\n";
-        cout << "\t1)Search element\n\t2)Delete element\n\t3)Insert element\n\t4)Permutation of elements\n\t0)Exit\n";
+        cout << "\t1)Search element\n\t2)Delete element\n\t3)Insert element\n\t4)Permutation of elements\n\t5)Individual homework\n\t6)Get length of list\n\t0)Exit\n";
         cin >> key;
         switch (key) {
             case '0':{
@@ -288,7 +319,6 @@ int main() {
                     }
                 }
                 break;
-
             }
             case '3':{
                 cout << "~~Enter the index of element which you want to insert and his value~~\n";
@@ -308,7 +338,18 @@ int main() {
                 delete index2;
                 break;;
             }
-
+            case '5' :{
+                cout << "~~Enter the number of elements which you want to delete~~\n";
+                int *amount = new int;
+                cin >> *amount;
+                newList.ihw(*amount);
+                delete amount;
+                break;
+            }
+            case '6':{
+                cout << "\t~~Length of list = "<<newList.GetLen() <<" ~~\n";
+                break;
+            }
         }
     }
     system("pause");
