@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <iomanip>
 using namespace std;
 struct ListItem{
     int data;
@@ -15,6 +17,7 @@ class List{
     short int len;
 
     void fillList_rand(){
+        auto start = chrono::high_resolution_clock::now();
         srand(time(nullptr));
         ListItem * curr = nullptr, * next = nullptr;
         for(int i = 0; i < len; i++){
@@ -26,9 +29,14 @@ class List{
         }
         curr->head = nullptr;
         begin = curr;
+        auto finish = chrono::high_resolution_clock::now();
+        chrono :: duration <float> duration = finish - start;
+        outList(begin);
+        cout << "Lead time ---> " << duration.count() << " seconds\n\n";
     }
 
     void fillList_hand(){
+        auto start = chrono::high_resolution_clock::now();
         ListItem * curr = nullptr, * next = nullptr;
         vector <int> buff;
         int * i = new int(0), p;
@@ -55,6 +63,10 @@ class List{
         }
         curr->head = nullptr;
         begin = curr;
+        auto finish = chrono::high_resolution_clock::now();
+        chrono :: duration <float> duration = finish - start;
+        outList(begin);
+        cout << "Lead time ---> " << duration.count() << " seconds\n\n";
     }
     public:
 
@@ -65,14 +77,12 @@ class List{
                 cout << "~~Enter amount of items~~\n";
                 cin >> len;
                 fillList_rand();
-                outList(begin);
                 break;
             }
             case '2':
             {
                 cout << "~~Enter the items~~\n";
                 fillList_hand();
-                outList(begin);
                 break;
             }
         }
@@ -125,6 +135,7 @@ class List{
     }
 
     void deleteItemIndex(int index){
+        auto start = chrono::high_resolution_clock::now();
         ListItem * item = searchItemIndex(index);
         if(index == 1 && len >= 2) begin = begin->tail;
         if(index == 1 && len == 1){
@@ -152,10 +163,14 @@ class List{
                 --len;
             }
         }
+        auto finish = chrono::high_resolution_clock::now();
+        chrono :: duration <float> duration = finish - start;
         outList(begin);
+        cout << "Lead time ---> " << duration.count() << " seconds\n\n";
     }
 
     void deleteItemData(int data){
+        auto start = chrono::high_resolution_clock::now();
         int * buff = new int(searchItemData(data));
         if( *buff == 1) begin = begin->tail;
         ListItem * item = searchItemIndex(*buff);
@@ -175,11 +190,15 @@ class List{
             }
             len--;
         }
+        auto finish = chrono::high_resolution_clock::now();
+        chrono :: duration <float> duration = finish - start;
         outList(begin);
+        cout << "Lead time ---> " << duration.count() << " seconds\n\n";
         delete buff;
     }
 
     void insertItem(int index, int dataIt){
+        auto start = chrono::high_resolution_clock::now();
         if(len == 0){
             ListItem * curr = new ListItem;
             begin = curr;
@@ -206,11 +225,15 @@ class List{
                     shiftable_item->head = item;
                 }
         }
-            outList(begin);
-            len++;
+        auto finish = chrono::high_resolution_clock::now();
+        chrono :: duration <float> duration = finish - start;
+        outList(begin);
+        cout << "Lead time ---> " << duration.count() << " seconds\n\n";
+        len++;
     }
 
     void permutationItems(int item1, int item2){
+        auto start = chrono::high_resolution_clock::now();
         if(item1 > item2) swap(item1,item2);
         ListItem *p1(searchItemIndex(item1)), *p2(searchItemIndex(item2));
         if(p1 && p2){
@@ -240,8 +263,11 @@ class List{
             p1->head = p2->head;
             p2->head = *buff;
             delete buff;
+            auto finish = chrono::high_resolution_clock::now();
+            chrono :: duration <float> duration = finish - start;
             cout << '\n';
             outList(begin);
+            cout << "Lead time ---> " << duration.count() << " seconds\n\n";
         }
     }
      void ihw (int k ){
@@ -255,6 +281,8 @@ class List{
     }
 };
 int main() {
+    cout << setprecision(10);
+    cout.setf(ios_base::fixed);
     bool check = true;
     char key;
     cout << "~~Choose how to create the list~~\n\t1) Fill with random\n\t2) Fill in manually\n";
